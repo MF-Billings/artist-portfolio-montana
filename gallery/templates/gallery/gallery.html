@@ -1,0 +1,85 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}Gallery - Artist Portfolio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Gallery</h1>
+
+    <div class="filters">
+        <form method="get" action="{% url 'gallery:gallery' %}">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div class="filter-group">
+                    <label for="search">Search Title/Description</label>
+                    <input type="text" id="search" name="search" placeholder="Search..." value="{{ search_query }}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="tag_search">Search Tags (substring)</label>
+                    <input type="text" id="tag_search" name="tag_search" placeholder="e.g., landscape, port, mountain..." value="{{ tag_search }}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="medium">Filter by Medium</label>
+                    <select id="medium" name="medium">
+                        <option value="">All Media</option>
+                        {% for value, label in medium_choices %}
+                        <option value="{{ value }}" {% if selected_medium == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                <button type="submit" class="btn">Apply Filters</button>
+                <a href="{% url 'gallery:gallery' %}" class="btn btn-secondary">Clear Filters</a>
+            </div>
+        </form>
+
+        {% if all_tags %}
+        <div style="margin-top: 1.5rem;">
+            <strong>Quick Tag Filter:</strong>
+            <div class="tags" style="margin-top: 0.5rem;">
+                {% for tag in all_tags %}
+                <a href="{% url 'gallery:tag_detail' tag.slug %}" class="tag" style="text-decoration: none; transition: background 0.3s;">
+                    {{ tag.get_full_path }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if tag_search or search_query or selected_medium %}
+    <p style="color: #666; margin-bottom: 1rem;">
+        Showing {{ artworks.count }} result{{ artworks.count|pluralize }}
+    </p>
+    {% endif %}
+
+    <div class="grid">
+        {% for artwork in artworks %}
+        <a href="{% url 'gallery:artwork_detail' artwork.pk %}" class="card" style="text-decoration: none; color: inherit;">
+            <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+            <div class="card-content">
+                <h3>{{ artwork.title }}</h3>
+                <p>{{ artwork.medium|title }}{% if artwork.year_created %}, {{ artwork.year_created }}{% endif %}</p>
+                {% if artwork.tags.all %}
+                <div class="tags">
+                    {% for tag in artwork.tags.all|slice:":3" %}
+                    <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                    {% if artwork.tags.count > 3 %}
+                    <span class="tag">+{{ artwork.tags.count|add:"-3" }} more</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 4rem;">
+            No artworks found matching your criteria.
+        </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

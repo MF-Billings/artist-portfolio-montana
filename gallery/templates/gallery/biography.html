@@ -1,0 +1,71 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}Biography - Artist Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .biography-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .biography-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1.5rem;
+        display: block;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .biography-text {
+        line-height: 1.8;
+        font-size: 1.1rem;
+        white-space: pre-line;
+    }
+
+    .birth-year {
+        color: #666;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="biography-content">
+    {% if biography %}
+    <div class="biography-header">
+        {% if biography.profile_image %}
+        <img src="{{ biography.profile_image.url }}" alt="{{ biography.artist_name }}" class="profile-image">
+        {% endif %}
+        <h1>{{ biography.artist_name }}</h1>
+        {% if biography.birth_year %}
+        <p class="birth-year">Born {{ biography.birth_year }}</p>
+        {% endif %}
+    </div>
+
+    <div class="biography-text">
+        {{ biography.content }}
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="{% url 'gallery:gallery' %}" class="btn">View Gallery</a>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem;">
+        <h1>Biography</h1>
+        <p style="color: #666; margin-top: 1rem;">
+            Biography not yet available. Visit the <a href="/admin/" style="color: #333;">admin panel</a> to add one.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

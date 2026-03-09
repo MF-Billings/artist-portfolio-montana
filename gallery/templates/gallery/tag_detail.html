@@ -1,0 +1,58 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}{{ tag.get_full_path }} - Artist Portfolio{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'gallery:gallery' %}" style="color: #666; text-decoration: none;">
+            ← Back to Gallery
+        </a>
+    </div>
+
+    <h1>{{ tag.get_full_path }}</h1>
+
+    {% if child_tags %}
+    <div style="margin: 1.5rem 0;">
+        <strong>Sub-tags:</strong>
+        <div class="tags" style="margin-top: 0.5rem;">
+            {% for child in child_tags %}
+            <a href="{% url 'gallery:tag_detail' child.slug %}" class="tag" style="text-decoration: none;">
+                {{ child.get_full_path }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <p style="color: #666; margin-bottom: 1rem;">
+        {{ artworks.count }} work{{ artworks.count|pluralize }}
+    </p>
+
+    <div class="grid">
+        {% for artwork in artworks %}
+        <a href="{% url 'gallery:artwork_detail' artwork.pk %}" class="card" style="text-decoration: none; color: inherit;">
+            <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+            <div class="card-content">
+                <h3>{{ artwork.title }}</h3>
+                <p>{{ artwork.medium|title }}{% if artwork.year_created %}, {{ artwork.year_created }}{% endif %}</p>
+                {% if artwork.tags.all %}
+                <div class="tags">
+                    {% for t in artwork.tags.all|slice:":3" %}
+                    <span class="tag">{{ t.name }}</span>
+                    {% endfor %}
+                    {% if artwork.tags.count > 3 %}
+                    <span class="tag">+{{ artwork.tags.count|add:"-3" }} more</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 4rem;">
+            No artworks found with this tag.
+        </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

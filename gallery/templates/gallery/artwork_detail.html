@@ -1,0 +1,117 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}{{ artwork.title }} - Artist Portfolio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .artwork-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .artwork-main {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        margin-bottom: 4rem;
+    }
+
+    .artwork-image {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .artwork-info h1 {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+    }
+
+    .artwork-meta {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .artwork-meta div {
+        margin-bottom: 0.5rem;
+    }
+
+    .artwork-description {
+        margin-top: 1.5rem;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+        .artwork-main {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="artwork-detail">
+    <div style="margin-bottom: 1rem;">
+        <a href="{% url 'gallery:gallery' %}" style="color: #666; text-decoration: none;">
+            ← Back to Gallery
+        </a>
+    </div>
+
+    <div class="artwork-main">
+        <div>
+            <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}" class="artwork-image">
+        </div>
+
+        <div class="artwork-info">
+            <h1>{{ artwork.title }}</h1>
+
+            <div class="artwork-meta">
+                <div><strong>Medium:</strong> {{ artwork.medium|title }}</div>
+                {% if artwork.year_created %}
+                <div><strong>Year:</strong> {{ artwork.year_created }}</div>
+                {% endif %}
+                <div><strong>Added:</strong> {{ artwork.created_at|date:"F Y" }}</div>
+            </div>
+
+            {% if artwork.tags.all %}
+            <div style="margin-top: 1.5rem;">
+                <strong>Tags:</strong>
+                <div class="tags" style="margin-top: 0.5rem;">
+                    {% for tag in artwork.tags.all %}
+                    <a href="{% url 'gallery:tag_detail' tag.slug %}" class="tag" style="text-decoration: none;">
+                        {{ tag.get_full_path }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if artwork.description %}
+            <div class="artwork-description">
+                <strong>About this work:</strong>
+                <p>{{ artwork.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if related_artworks %}
+    <section>
+        <h2>Related Works</h2>
+        <div class="grid">
+            {% for related in related_artworks %}
+            <a href="{% url 'gallery:artwork_detail' related.pk %}" class="card" style="text-decoration: none; color: inherit;">
+                <img src="{{ related.image.url }}" alt="{{ related.title }}">
+                <div class="card-content">
+                    <h3>{{ related.title }}</h3>
+                    <p>{{ related.medium|title }}{% if related.year_created %}, {{ related.year_created }}{% endif %}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

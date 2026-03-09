@@ -1,0 +1,63 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}Home - Artist Portfolio{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to the Gallery</h1>
+    <p>A collection of watercolour paintings, drawings, and photography spanning a lifetime of artistic expression.</p>
+    <a href="{% url 'gallery:gallery' %}" class="btn">Explore Gallery</a>
+</div>
+
+<div class="container">
+    {% if featured_artworks %}
+    <section>
+        <h2>Featured Works</h2>
+        <div class="grid">
+            {% for artwork in featured_artworks %}
+            <a href="{% url 'gallery:artwork_detail' artwork.pk %}" class="card" style="text-decoration: none; color: inherit;">
+                <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+                <div class="card-content">
+                    <h3>{{ artwork.title }}</h3>
+                    <p>{{ artwork.medium|title }}{% if artwork.year_created %}, {{ artwork.year_created }}{% endif %}</p>
+                    {% if artwork.tags.all %}
+                    <div class="tags">
+                        {% for tag in artwork.tags.all|slice:":3" %}
+                        <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section style="margin-top: 4rem;">
+        <h2>Recent Works</h2>
+        <div class="grid">
+            {% for artwork in recent_artworks %}
+            <a href="{% url 'gallery:artwork_detail' artwork.pk %}" class="card" style="text-decoration: none; color: inherit;">
+                <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+                <div class="card-content">
+                    <h3>{{ artwork.title }}</h3>
+                    <p>{{ artwork.medium|title }}{% if artwork.year_created %}, {{ artwork.year_created }}{% endif %}</p>
+                    {% if artwork.tags.all %}
+                    <div class="tags">
+                        {% for tag in artwork.tags.all|slice:":3" %}
+                        <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+            {% empty %}
+            <p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 4rem;">
+                No artworks yet. Visit the <a href="/admin/" style="color: #333;">admin panel</a> to add some!
+            </p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
