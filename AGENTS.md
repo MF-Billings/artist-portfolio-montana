@@ -42,3 +42,7 @@ artist_portfolio_montana/
 - **Formatter**: `black`
 - **Linter**: `flake8`
 - Follow PEP 8 guidelines.
+
+## 6. Documentation Guidelines
+- **Keep Documentation Updated**: All documentation (such as README files, execution plans, and API docs) must always be updated to reflect code changes.
+- **Document All Commands**: No command (e.g., new management commands, runner options, setup scripts) should be left undocumented.
