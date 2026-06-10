@@ -1,8 +1,9 @@
 # Run in Local
-Run it with:                                                                                                                                                            
+Run it with:
 
-source venv/bin/activate
-python manage.py runserver
+```bash
+uv run python manage.py runserver
+```
 
 Then visit:
 - http://127.0.0.1:8000/ — homepage
@@ -11,4 +12,6 @@ Then visit:
 
 You'll want to create a superuser if you haven't already so you can log into the admin:
 
-python manage.py createsuperuser
+```bash
+uv run python manage.py createsuperuser
+```
